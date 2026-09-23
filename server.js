@@ -34,7 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-// Routes Setup
+// Routes Setup (সঠিক পাথ সহ)
 app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/investors', require('./src/routes/investorRoutes'));
 app.use('/api/products', require('./src/routes/productRoutes'));
