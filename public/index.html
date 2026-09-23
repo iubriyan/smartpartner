@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPartner - Business Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Hidden / Secured Login Overlay -->
+    <div id="loginOverlay" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2><i class="fa-solid fa-lock"></i> Secured Login</h2>
+            <p>Access restricted to authorized members only.</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter email...">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter password...">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="button" id="closeLoginBtn" class="btn btn-secondary">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div id="appContainer" class="app-container">
+        
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2><i class="fa-solid fa-chart-line"></i> SmartPartner</h2>
+                <span>Business Management</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-target="dashboardTab"><i class="fa-solid fa-house"></i> Dashboard</li>
+                <li data-target="investorsTab"><i class="fa-solid fa-hand-holding-dollar"></i> Investors</li>
+                <li data-target="productsTab"><i class="fa-solid fa-boxes-stacked"></i> Products & Stock</li>
+                <li data-target="ordersTab"><i class="fa-solid fa-cart-shopping"></i> Orders & Customers</li>
+                <li data-target="auditTab"><i class="fa-solid fa-clock-rotate-left"></i> Audit Logs</li>
+                <li data-target="membersTab" id="memberNavBtn" class="hidden"><i class="fa-solid fa-user-plus"></i> Add Member</li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="secretLoginTrigger" class="btn-icon" title="Member Login"><i class="fa-solid fa-key"></i></button>
+                <button id="logoutBtn" class="btn-icon hidden" title="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="menu-toggle"><i class="fa-solid fa-bars"></i></div>
+                <h3 id="pageTitle">Dashboard Overview</h3>
+                <div class="user-info">
+                    <span id="loggedInUserName">Guest User</span>
+                </div>
+            </header>
+
+            <div class="content-body">
+                
+                <!-- 1. DASHBOARD TAB -->
+                <div id="dashboardTab" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fa-solid fa-wallet"></i>
+                            <div>
+                                <h4>Total Balance</h4>
+                                <h2 id="totalBalanceVal">BDT 0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                            <div>
+                                <h4>Total Investment</h4>
+                                <h2 id="totalInvestmentVal">BDT 0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fa-solid fa-money-bill-trend-up"></i>
+                            <div>
+                                <h4>Total Expense</h4>
+                                <h2 id="totalExpenseVal">BDT 0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <div>
+                                <h4>Net Profit</h4>
+                                <h2 id="totalProfitVal">BDT 0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-bar-reports">
+                        <a href="/api/reports/download-pdf" target="_blank" class="btn btn-success"><i class="fa-solid fa-file-pdf"></i> Download PDF Report</a>
+                    </div>
+                </div>
+
+                <!-- 2. INVESTORS TAB -->
+                <div id="investorsTab" class="tab-content">
+                    <div class="card">
+                        <h3>Add / Update Investor</h3>
+                        <form id="investorForm">
+                            <div class="form-row">
+                                <input type="text" id="investorName" placeholder="Investor Name" required>
+                                <input type="number" id="investorAmount" placeholder="Investment Amount (BDT)" required>
+                                <button type="submit" class="btn btn-primary">Save Investment</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mt-20">
+                        <h3>Investor List & Share Calculation</h3>
+                        <div class="table-responsive">
+                            <table id="investorTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Total Invested</th>
+                                        <th>Share Percentage (%)</th>
+                                        <th>Estimated Return / Profit Share</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PRODUCTS TAB -->
+                <div id="productsTab" class="tab-content">
+                    <div class="card">
+                        <h3>Add Product / Update Stock</h3>
+                        <form id="productForm">
+                            <div class="form-row grid-3">
+                                <input type="text" id="productName" placeholder="Product Name" required>
+                                <input type="number" id="productQty" placeholder="Quantity" required>
+                                <input type="number" id="productBuyingPrice" placeholder="Buying Price per Unit" required>
+                                <input type="number" id="productExtraCost" placeholder="Extra Cost per Unit (Optional)">
+                                <button type="submit" class="btn btn-primary" style="grid-column: span 2;">Save Product</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mt-20">
+                        <h3>Current Stock List</h3>
+                        <div class="table-responsive">
+                            <table id="productTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Stock Quantity</th>
+                                        <th>Buying Price</th>
+                                        <th>Extra Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ORDERS TAB -->
+                <div id="ordersTab" class="tab-content">
+                    <div class="card">
+                        <h3>Create Customer Order</h3>
+                        <form id="orderForm">
+                            <div class="form-row grid-3">
+                                <input type="text" id="custName" placeholder="Customer Name" required>
+                                <input type="text" id="custPhone" placeholder="Mobile Number" required>
+                                <input type="text" id="orderProductName" list="productListOptions" placeholder="Select or Type Product" required>
+                                <datalist id="productListOptions"></datalist>
+                                <input type="number" id="orderQty" placeholder="Quantity" value="1" required>
+                                <input type="number" id="orderSellingPrice" placeholder="Selling Price (Total)" required>
+                                <input type="number" id="orderCourierCharge" placeholder="Courier Charge" value="0">
+                                <button type="submit" class="btn btn-primary" style="grid-column: span 3;">Place Order & Update Stock</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card mt-20">
+                        <h3>Order & Customer History</h3>
+                        <div class="table-responsive">
+                            <table id="orderTable">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Phone</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Selling Price</th>
+                                        <th>Profit</th>
+                                        <th>Courier</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. AUDIT LOGS TAB -->
+                <div id="auditTab" class="tab-content">
+                    <div class="card">
+                        <h3>System Audit Trail (Activity Logs)</h3>
+                        <div class="table-responsive">
+                            <table id="auditTable">
+                                <thead>
+                                    <tr>
+                                        <th>User Name</th>
+                                        <th>Action</th>
+                                        <th>Details</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. ADD MEMBER TAB (Admin Only) -->
+                <div id="membersTab" class="tab-content">
+                    <div class="card">
+                        <h3>Register New Authorized Member</h3>
+                        <form id="memberForm">
+                            <div class="form-group">
+                                <label>Member Name</label>
+                                <input type="text" id="newMemberName" required placeholder="Full Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="newMemberEmail" required placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="newMemberPassword" required placeholder="Password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Member Account</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
