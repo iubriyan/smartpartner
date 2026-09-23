@@ -27,8 +27,6 @@ app.get('/', (req, res) => {
     res.send('SmartPartner API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
-
 // Local development listen
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
@@ -45,3 +43,9 @@ app.use('/api/reports', require('./src/routes/reportRoutes'));
 
 // Export for Vercel
 module.exports = app;
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
