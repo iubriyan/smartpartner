@@ -20,12 +20,7 @@ if (process.env.MONGO_URI) {
     .catch((err) => console.log('Database Connection Error: ', err));
 }
 
-// Routes Setup
-app.use('/api/auth', require('./src/routes/authRoutes'));
-app.use('/api/investors', require('./src/routes/investorRoutes'));
-app.use('/api/products', require('./src/routes/productRoutes'));
-app.use('/api/orders', require('./src/routes/orderRoutes'));
-app.use('/api/reports', require('./src/routes/reportRoutes'));
+
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -41,5 +36,12 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-// Export for Vercel Serverless
+// Routes Setup
+app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/investors', require('./src/routes/investorRoutes'));
+app.use('/api/products', require('./src/routes/productRoutes'));
+app.use('/api/orders', require('./src/routes/orderRoutes'));
+app.use('/api/reports', require('./src/routes/reportRoutes'));
+
+// Export for Vercel
 module.exports = app;
